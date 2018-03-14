@@ -44,7 +44,7 @@ func PostApuntes(w http.ResponseWriter, r *http.Request){
 	apuntes := Apuntes{"Apuntitos"}
 	t := template.New("apuntes") // Create a template.
 	//http.Handle("/public/", http.FileServer(http.Dir("/public/booklet")))
-	//http.Handle("/public/", http.StripPrefix("/public/", http.FileServer(http.Dir("/booklet"))))
+	//http.Handle("/", http.StripPrefix("/", http.FileServer(http.Dir("./public/"))))
     t, _ = t.ParseGlob("public/*.html")  // Parse template file.
     //user := GetUser() // Get current user infomration.
     t.ExecuteTemplate(w, "apuntes", apuntes)  
@@ -76,6 +76,7 @@ func main() {
 	r.HandleFunc("/PostApuntes", PostApuntes).Methods("GET")
 	//r.HandleFunc("/PutNote/{id}", PutNote).Methods("PUT")
 	//r.HandleFunc("/DeleteNote{id}", DeleteNote).Methods("Delete")
+	//http.Handle("/PostApuntes", http.FileServer(http.Dir("static/")))
 
 	server := &http.Server{
 			Addr			: ":8080",
@@ -85,6 +86,7 @@ func main() {
 			MaxHeaderBytes	: 1 << 20,
 	}
 	//r.ServeFiles("/static/*filepath", assetFS())
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 
 	log.Println("Sirviendo....")
 
